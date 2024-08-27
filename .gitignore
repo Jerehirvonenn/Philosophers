@@ -1,0 +1,6 @@
+*test*
+a.out
+*.o
+*.d
+DS_store
+*.swp
