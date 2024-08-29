@@ -46,7 +46,7 @@ int	check_args(int ac, char **av, t_rules *data)
 	return (0);
 }
 
-void	test_rules(t_rules *data)
+void	test_init(t_rules *data)
 {
 	printf("Number of philos:%d\n", data->philo_num);
 	printf("Time to die     :%d\n", data->time_die);
@@ -55,7 +55,7 @@ void	test_rules(t_rules *data)
 	printf("Number of meals :%d\n", data->num_eat);
 }
 
-void	philo_and_lock(t_rules *data)
+int	philo_and_lock(t_rules *data)
 {
 	int i;
 
@@ -64,16 +64,18 @@ void	philo_and_lock(t_rules *data)
 	{
 		data->philo[i].id = i + 1;
 		data->philo[i].meals = 0;
-		data->philo[i].leftfork = i;
-		data->philo[i].rightfork = (i + 1) & data->philonum;
+		data->philo[i].left_fork = &data->forks[i];
+		data->philo[i].right_fork = &data->forks[(i + 1) & data->philo_num];
+		if (pthread_mutex_init(&data->forks[i], NULL))
+			return (1);
 	}
+	if (pthread_mutex_init(&data->lock, NULL))
+		return (1);
+	return (0);
 }
 
 int	init_philo(t_rules *data)
 {
-	int i;
-
-	i = 0;
 	data->philo = malloc(sizeof(t_philo) * data->philo_num);
 	if (!data->philo)
 		return (1);
@@ -83,7 +85,13 @@ int	init_philo(t_rules *data)
 		free(data->philo);
 		return (1);
 	}
-	philo_and_lock(data);
+	if (philo_and_lock(data))
+	{
+		free(data->philo);
+		free(data->forks);
+		return(1);
+	}
+	return (0);
 }
 
 int	main(int ac, char **av)
@@ -92,7 +100,7 @@ int	main(int ac, char **av)
 
 	if (check_args(ac, av, &data))
 		return (1);
-	test_rules(&data); //testing
 	if (init_philo(&data))
 		return (1);
+	test_init(&data); //testing
 }

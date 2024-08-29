@@ -1,7 +1,23 @@
 #ifndef PHILO_H
 # define PHILO_H
 
-#include <stdlib.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <pthread.h>
+# include <stdio.h>
+# include <sys/time.h>
+
+
+struct s_rules;
+
+typedef struct s_philo
+{
+	int			id;
+	int			meals;
+	pthread_mutex_t		*left_fork;
+	pthread_mutex_t		*right_fork;
+	struct s_rules			*data;
+}	t_philo;
 
 typedef struct s_rules
 {
@@ -12,18 +28,10 @@ typedef struct s_rules
 	int			num_eat;
 	int			all_full;
 	int			dead;
-	t_philo			*philo;
-	p_thread _mutex_t	*forks;
+	t_philo		*philo;
+	pthread_mutex_t		*forks;
+	pthread_mutex_t		lock;
 }	t_rules;
-
-typedef struct s_philo
-{
-	int		id;
-	int		meals;
-	t_mutex		*left_fork;
-	t_mutex		*right_fork;
-	t_rules		*data;
-}	t_philo;
 
 int	check_args(int ac, char **av, t_rules *data);
 int	ft_atoi(const char *str, int *res);
