@@ -7,16 +7,16 @@
 # include <stdio.h>
 # include <sys/time.h>
 
-
 struct s_rules;
 
 typedef struct s_philo
 {
+	pthread_t		thread;
 	int			id;
 	int			meals;
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;
-	struct s_rules			*data;
+	struct s_rules		*data;
 }	t_philo;
 
 typedef struct s_rules
@@ -28,12 +28,12 @@ typedef struct s_rules
 	int			num_eat;
 	int			all_full;
 	int			dead;
-	t_philo		*philo;
+	t_philo			*philo;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		lock;
 }	t_rules;
 
 int	check_args(int ac, char **av, t_rules *data);
-int	ft_atoi(const char *str, int *res);
+int	init_philo(t_rules *data);
 
 #endif
