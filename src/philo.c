@@ -28,8 +28,12 @@ void	*ft_test(void *pointer)
 {
 	t_philo *philo;
 
-	philo = pointer;
+	philo = (t_philo*)pointer;
+	int random_time = rand() % 1000;  // Random time between 0 and 999 milliseconds
+	usleep(random_time * 1000);       // usleep takes microseconds
+	pthread_mutex_lock(&philo->data->lock);
 	printf("Hello! I'm philosopher number %d\n", philo->id);
+	pthread_mutex_unlock(&philo->data->lock);
 	return (0);
 }
 

@@ -35,5 +35,7 @@ typedef struct s_rules
 
 int	check_args(int ac, char **av, t_rules *data);
 int	init_philo(t_rules *data);
+int	start_threads(t_rules *data);
+int	join_threads(t_rules *data);
 
 #endif

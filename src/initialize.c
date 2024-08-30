@@ -56,6 +56,7 @@ static int	philo_and_lock(t_rules *data)
 		data->philo[i].meals = 0;
 		data->philo[i].left_fork = &data->forks[i];
 		data->philo[i].right_fork = &data->forks[(i + 1) % data->philo_num];
+		data->philo[i].data = data;
 		if (pthread_mutex_init(&data->forks[i], NULL))
 			return (1);
 	}
