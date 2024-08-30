@@ -29,7 +29,7 @@ void	*ft_test(void *pointer)
 	t_philo *philo;
 
 	philo = (t_philo*)pointer;
-	int random_time = rand() % 1000;  // Random time between 0 and 999 milliseconds
+	int random_time = rand() % 1000;  // Random time
 	usleep(random_time * 1000);       // usleep takes microseconds
 	pthread_mutex_lock(&philo->data->lock);
 	printf("Hello! I'm philosopher number %d\n", philo->id);
@@ -43,8 +43,13 @@ int	start_threads(t_rules *data)
 
 	i = -1;
 	while (++i < data->philo_num)
-		if (pthread_create(&(data->philo[i]).thread, NULL, &ft_test, &data->philo[i]))
+		if (pthread_create(&(data->philo[i].thread),
+			NULL, &ft_test, &data->philo[i]))
+		{
+			while (--i >= 0)
+				pthread_join(data->philo[i].thread, NULL);
 			return (1);
+		}
 	return (0);
 }
 
@@ -64,10 +69,11 @@ int	main(int ac, char **av)
 	t_rules	data;
 
 	if (check_args(ac, av, &data))
-		return (1);
+		return (error_message("Invalid input"));
 	if (init_philo(&data))
 		return (1);
 	test_init(&data); //testing
-	start_threads(&data);
+	if (start_threads(&data))
+		return (1);
 	join_threads(&data);
 }

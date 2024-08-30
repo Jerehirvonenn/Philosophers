@@ -58,29 +58,39 @@ static int	philo_and_lock(t_rules *data)
 		data->philo[i].right_fork = &data->forks[(i + 1) % data->philo_num];
 		data->philo[i].data = data;
 		if (pthread_mutex_init(&data->forks[i], NULL))
+		{
+			while (--i >= 0)
+				pthread_mutex_destroy(&data->forks[i]);
 			return (1);
+		}
 	}
 	if (pthread_mutex_init(&data->lock, NULL))
+	{
+		while (--i >= 0)
+			pthread_mutex_destroy(&data->forks[i]);
 		return (1);
+	}
 	return (0);
 }
 
 int	init_philo(t_rules *data)
 {
+	data->philo = NULL;
+	data->forks = NULL;
 	data->philo = malloc(sizeof(t_philo) * data->philo_num);
 	if (!data->philo)
-		return (1);
+		return (error_message("Failed to malloc"));
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->philo_num);
 	if (!data->forks)
 	{
 		free(data->philo);
-		return (1);
+		return (error_message("Failed to malloc"));
 	}
 	if (philo_and_lock(data))
 	{
 		free(data->philo);
 		free(data->forks);
-		return (1);
+		return (error_message("Failed to create mutex"));
 	}
 	return (0);
 }

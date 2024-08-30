@@ -33,9 +33,14 @@ typedef struct s_rules
 	pthread_mutex_t		lock;
 }	t_rules;
 
+//initialize.c
 int	check_args(int ac, char **av, t_rules *data);
 int	init_philo(t_rules *data);
+//threads.c
 int	start_threads(t_rules *data);
 int	join_threads(t_rules *data);
+//error.c
+int	error_message(char *str);
+int	free_and_destroy(char *str, t_rules *data, int exit);
 
 #endif
