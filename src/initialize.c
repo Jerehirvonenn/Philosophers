@@ -40,9 +40,20 @@ int	check_args(int ac, char **av, t_rules *data)
 		return (1);
 	if (ac == 5)
 		data->num_eat = -1;
-	data->all_full = 0;
-	data->dead = 0;
+	data->dead_full = 0;
 	data->start_time = ft_time();
+	return (0);
+}
+
+static int	init_locks(t_rules *data)
+{
+	if (pthread_mutex_init(&data->lock, NULL))
+		return (1);
+	if (pthread_mutex_init(&data->print_lock, NULL))
+	{
+		pthread_mutex_destroy(&data->lock);
+		return (1);
+	}
 	return (0);
 }
 
@@ -66,7 +77,7 @@ static int	philo_and_lock(t_rules *data)
 			return (1);
 		}
 	}
-	if (pthread_mutex_init(&data->lock, NULL))
+	if (init_locks(data))
 	{
 		while (--i >= 0)
 			pthread_mutex_destroy(&data->forks[i]);
@@ -81,18 +92,18 @@ int	init_philo(t_rules *data)
 	data->forks = NULL;
 	data->philo = malloc(sizeof(t_philo) * data->philo_num);
 	if (!data->philo)
-		return (error_message("Failed to malloc"));
+		return (error_message("Failed to malloc\n"));
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->philo_num);
 	if (!data->forks)
 	{
 		free(data->philo);
-		return (error_message("Failed to malloc"));
+		return (error_message("Failed to malloc\n"));
 	}
 	if (philo_and_lock(data))
 	{
 		free(data->philo);
 		free(data->forks);
-		return (error_message("Failed to create mutex"));
+		return (error_message("Failed to create mutex\n"));
 	}
 	return (0);
 }

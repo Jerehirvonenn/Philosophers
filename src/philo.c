@@ -11,7 +11,7 @@ void	test_init(t_rules *data)
 	printf("Time to eat     :%d\n", data->time_eat);
 	printf("Time to sleep   :%d\n", data->time_sleep);
 	printf("Number of meals :%d\n", data->num_eat);
-	printf("Start Time      :%zu\n", data->start_time);
+	printf("Start Time      :%lld\n", data->start_time);
 	int i = 0;
 	while (i < data->philo_num)
 	{
@@ -27,20 +27,20 @@ void	test_init(t_rules *data)
 
 void	*ft_test(void *pointer)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
-	philo = (t_philo*)pointer;
-	int random_time = rand() % 1000;  // Random time
-	usleep(random_time * 1000);       // usleep takes microseconds
-	pthread_mutex_lock(&philo->data->lock);
+	philo = (t_philo *)pointer;
+	int random_time = rand() % 1000;
+	usleep(random_time * 1000);
+	pthread_mutex_lock(&philo->data->print_lock);
 	printf("Hello! I'm philosopher number %d\n", philo->id);
-	pthread_mutex_unlock(&philo->data->lock);
+	pthread_mutex_unlock(&philo->data->print_lock);
 	return (0);
 }
 
 int	start_threads(t_rules *data)
 {
-	int		i;
+	int			i;
 	long long	time;
 
 	i = -1;
@@ -48,8 +48,9 @@ int	start_threads(t_rules *data)
 	data->start_time = time;
 	while (++i < data->philo_num)
 	{
+		data->philo->last_meal = time;
 		if (pthread_create(&(data->philo[i].thread),
-			NULL, &ft_test, &data->philo[i]))
+				NULL, &ft_test, &data->philo[i]))
 		{
 			while (--i >= 0)
 				pthread_join(data->philo[i].thread, NULL);
@@ -75,12 +76,13 @@ int	main(int ac, char **av)
 	t_rules	data;
 
 	if (check_args(ac, av, &data))
-		return (error_message("Invalid input"));
+		return (error_message("Invalid input\n"));
 	if (init_philo(&data))
 		return (1);
 	test_init(&data); //testing
 	if (start_threads(&data))
-		return (free_and_destroy("Failed to create threads", &data, 1));
+		return (free_and_destroy("Failed to create threads\n", &data, 1));
 	//monitor until the end of sim
 	join_threads(&data);
+	//free everything
 }
