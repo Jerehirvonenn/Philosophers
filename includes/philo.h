@@ -49,6 +49,7 @@ int	free_and_destroy(char *str, t_rules *data, int exit);
 
 //utils.c
 long long	ft_time(void);
+void		ft_putstr_fd(char *str, int fd);
 
 //thread.c
 int	start_threads(t_rules *data);

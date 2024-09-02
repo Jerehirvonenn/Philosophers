@@ -1,5 +1,5 @@
 #include "../includes/philo.h"
-
+/*
 static void	*ft_test(void *pointer)
 {
 	//testing
@@ -12,7 +12,7 @@ static void	*ft_test(void *pointer)
 	printf("Hello! I'm philosopher number %d\n", philo->id);
 	pthread_mutex_unlock(&philo->data->print_lock);
 	return (0);
-}
+}*/
 
 int	start_threads(t_rules *data)
 {
@@ -26,7 +26,7 @@ int	start_threads(t_rules *data)
 	{
 		data->philo->last_meal = time;
 		if (pthread_create(&(data->philo[i].thread),
-				NULL, &ft_test, &data->philo[i]))
+				NULL, &eat_sleep_think, &data->philo[i]))
 		{
 			while (--i >= 0)
 				pthread_join(data->philo[i].thread, NULL);
