@@ -27,5 +27,9 @@ int	free_and_destroy(char *str, t_rules *data, int exit)
 	pthread_mutex_destroy(&data->lock);
 	while (i < data->philo_num)
 		pthread_mutex_destroy(&data->forks[i++]);
+	if (data->philo)
+		free(data->philo);
+	if (data->forks)
+		free(data->forks);
 	return (exit);
 }

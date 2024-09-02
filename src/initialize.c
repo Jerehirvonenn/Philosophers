@@ -42,6 +42,7 @@ int	check_args(int ac, char **av, t_rules *data)
 		data->num_eat = -1;
 	data->all_full = 0;
 	data->dead = 0;
+	data->start_time = ft_time();
 	return (0);
 }
 
@@ -57,6 +58,7 @@ static int	philo_and_lock(t_rules *data)
 		data->philo[i].left_fork = &data->forks[i];
 		data->philo[i].right_fork = &data->forks[(i + 1) % data->philo_num];
 		data->philo[i].data = data;
+		data->philo[i].last_meal = 0;
 		if (pthread_mutex_init(&data->forks[i], NULL))
 		{
 			while (--i >= 0)

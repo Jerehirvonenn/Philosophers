@@ -11,6 +11,7 @@ void	test_init(t_rules *data)
 	printf("Time to eat     :%d\n", data->time_eat);
 	printf("Time to sleep   :%d\n", data->time_sleep);
 	printf("Number of meals :%d\n", data->num_eat);
+	printf("Start Time      :%zu\n", data->start_time);
 	int i = 0;
 	while (i < data->philo_num)
 	{
@@ -39,10 +40,14 @@ void	*ft_test(void *pointer)
 
 int	start_threads(t_rules *data)
 {
-	int	i;
+	int		i;
+	long long	time;
 
 	i = -1;
+	time = ft_time();
+	data->start_time = time;
 	while (++i < data->philo_num)
+	{
 		if (pthread_create(&(data->philo[i].thread),
 			NULL, &ft_test, &data->philo[i]))
 		{
@@ -50,6 +55,7 @@ int	start_threads(t_rules *data)
 				pthread_join(data->philo[i].thread, NULL);
 			return (1);
 		}
+	}
 	return (0);
 }
 
@@ -74,6 +80,7 @@ int	main(int ac, char **av)
 		return (1);
 	test_init(&data); //testing
 	if (start_threads(&data))
-		return (1);
+		return (free_and_destroy("Failed to create threads", &data, 1));
+	//monitor until the end of sim
 	join_threads(&data);
 }

@@ -14,6 +14,7 @@ typedef struct s_philo
 	pthread_t		thread;
 	int			id;
 	int			meals;
+	long long		last_meal;
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;
 	struct s_rules		*data;
@@ -28,6 +29,7 @@ typedef struct s_rules
 	int			num_eat;
 	int			all_full;
 	int			dead;
+	long long		start_time;
 	t_philo			*philo;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		lock;
@@ -42,5 +44,6 @@ int	join_threads(t_rules *data);
 //error.c
 int	error_message(char *str);
 int	free_and_destroy(char *str, t_rules *data, int exit);
-
+//utils.c
+size_t	ft_time(void);
 #endif
