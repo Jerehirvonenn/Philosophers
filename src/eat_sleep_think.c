@@ -8,7 +8,7 @@ static int	ft_sleep(long long wait, t_philo *philo)
 
 	start = ft_time();
 	i = 0;
-	while (get_time() - start > wait)
+	while (ft_time() - start < wait)
 	{
 		if (i % 100 == 0)
 		{
@@ -23,6 +23,7 @@ static int	ft_sleep(long long wait, t_philo *philo)
 		i++;
 		usleep(500);
 	}
+	return (0);
 }
 
 static int	print_lock(char *str, t_philo *philo)
@@ -46,8 +47,27 @@ static int	grab_forks(t_philo *philo)
 	print_lock("has taken left fork", philo);
 	pthread_mutex_lock(philo->right_fork);
 	print_lock("has taken right fork", philo);
+	return (0);
+}
+
+static int	ft_eat(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->lock);
+	philo->meals++;
+	philo->last_meal = ft_time();
+	pthread_mutex_unlock(&philo->data->lock);
+	print_lock("is eating", philo);
+	ft_sleep(philo->data->time_eat, philo);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
+	return (0);
+}
+
+static int	ft_sleep_think(t_philo *philo)
+{
+	print_lock("is sleeping", philo);
+	ft_sleep(philo->data->time_eat, philo);
+	print_lock("is thinking", philo);
 	return (0);
 }
 
@@ -64,7 +84,9 @@ void	*eat_sleep_think(void *strct)
 	//grab forks
 		grab_forks(philo);
 	//eat
+		ft_eat(philo);
 	//sleep_think
+		ft_sleep_think(philo);
 	//repeat
 		return (0);
 	}
