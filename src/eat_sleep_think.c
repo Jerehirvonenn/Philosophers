@@ -1,13 +1,42 @@
 #include "../includes/philo.h"
 
 #include <stdio.h>
+static int	ft_sleep(long long wait, t_philo *philo)
+{
+	long long	start;
+	long long 	i;
+
+	start = ft_time();
+	i = 0;
+	while (get_time() - start > wait)
+	{
+		if (i % 100 == 0)
+		{
+			pthread_mutex_lock(&philo->data->lock);
+			if (philo->data->dead_full)
+			{
+				pthread_mutex_unlock(&philo->data->lock);
+				return (1);
+			}
+			pthread_mutex_unlock(&philo->data->lock);
+		}
+		i++;
+		usleep(500);
+	}
+}
+
 static int	print_lock(char *str, t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->print_lock);
+	pthread_mutex_lock(&philo->data->lock);
+	if (philo->data->dead_full)
+	{
+		pthread_mutex_unlock(&philo->data->lock);
+		return (1);
+	}
 	printf("%lld ", ft_time() - philo->data->start_time);
 	printf("%d ", philo->id);
 	printf("%s\n", str);
-	pthread_mutex_unlock(&philo->data->print_lock);
+	pthread_mutex_unlock(&philo->data->lock);
 	return (0);
 }
 
