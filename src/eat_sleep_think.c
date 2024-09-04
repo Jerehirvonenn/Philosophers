@@ -47,9 +47,9 @@ static int	print_lock(char *str, t_philo *philo)
 static int	grab_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
-	print_lock("has taken left fork", philo);
+	print_lock("has taken a fork", philo);
 	pthread_mutex_lock(philo->right_fork);
-	print_lock("has taken right fork", philo);
+	print_lock("has taken a fork", philo);
 	return (0);
 }
 
@@ -82,12 +82,15 @@ void	*eat_sleep_think(void *strct)
 	philo = (t_philo *)strct;
 	data = philo->data;
 	//while all not eaten and no one dead
+	pthread_mutex_lock(&data->death_lock);
 	while (data->dead_full == 0)
 	{
+		pthread_mutex_unlock(&data->death_lock);
 		grab_forks(philo);
 		ft_eat(philo);
 		ft_sleep_think(philo);
-		return (0);
+		pthread_mutex_lock(&data->death_lock);
 	}
+	pthread_mutex_unlock(&data->death_lock);
 	return (0);
 }

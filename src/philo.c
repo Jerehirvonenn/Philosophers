@@ -37,18 +37,27 @@ void	monitor(t_rules *data)
 			pthread_mutex_lock(&data->meal_lock[i]);
 			if (ft_time() - data->philo[i].last_meal >= data->time_die)
 			{
-				printf("%lld %d\n", ft_time() - data->philo[i].last_meal, data->time_die);
 				pthread_mutex_lock(&data->death_lock);
 				data->dead_full = 1;
+				printf("%lld %d %s\n", ft_time() - data->start_time, i + 1, "died");
 				pthread_mutex_unlock(&data->death_lock);
 				pthread_mutex_unlock(&data->meal_lock[i]);
-				printf("%lld %d %s\n", ft_time() - data->start_time, i + 1, "died");
-				break;
+				return ;
 			}
-			pthread_mutex_unlock(&data->death_lock);
+			pthread_mutex_unlock(&data->meal_lock[i]);
+
 		}
-		if (data->dead_full == 1)
-			break;
+		i = 0;
+		while (data->num_eat != -1 && i < data->philo_num && data->philo[i].meals >= data->num_eat)
+			i++;
+		if (i == data->philo_num)
+		{
+			pthread_mutex_lock(&data->death_lock);
+			data->dead_full = 1;
+			printf("ALL ATE\n");
+			pthread_mutex_unlock(&data->death_lock);
+			return ;
+		}
 		i = -1;
 	}
 }
@@ -64,8 +73,7 @@ int	main(int ac, char **av)
 	test_init(&data); //testing
 	if (start_threads(&data))
 		return (free_and_destroy("Failed to create threads\n", &data, 1));
-	//monitor until the end of sim
 	monitor(&data);
 	join_threads(&data);
-	//free everything
+	free_and_destroy(NULL, &data, 0);
 }
