@@ -17,3 +17,27 @@ void	ft_putstr_fd(char *str, int fd)
 		i++;
 	write(fd, str, i);
 }
+
+int	ft_atoi(const char *str, int *res)
+{
+	long long int	result;
+	int				i;
+
+	i = 0;
+	result = 0;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '+' || str[i] == '-')
+		if (str[i++] == '-')
+			return (1);
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = result * 10 + (str[i++] - '0');
+		if (result > 2147483648)
+			return (1);
+	}
+	if (str[i] || result <= 0)
+		return (1);
+	*res = result;
+	return (0);
+}
