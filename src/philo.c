@@ -51,13 +51,7 @@ void	monitor(t_rules *data)
 		while (data->num_eat != -1 && i < data->philo_num && data->philo[i].meals >= data->num_eat)
 			i++;
 		if (i == data->philo_num)
-		{
-			pthread_mutex_lock(&data->death_lock);
-			data->dead_full = 1;
-			printf("ALL ATE\n");
-			pthread_mutex_unlock(&data->death_lock);
 			return ;
-		}
 		i = -1;
 	}
 }

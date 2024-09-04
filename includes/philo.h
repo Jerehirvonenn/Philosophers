@@ -28,7 +28,8 @@ typedef struct s_rules
 	int			time_eat;
 	int			time_sleep;
 	int			num_eat;
-	int			dead_full;
+	int			dead;
+	int			full;
 	long long		start_time;
 	t_philo			*philo;
 	pthread_mutex_t		*forks;

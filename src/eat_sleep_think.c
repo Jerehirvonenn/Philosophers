@@ -81,7 +81,9 @@ void	*eat_sleep_think(void *strct)
 
 	philo = (t_philo *)strct;
 	data = philo->data;
-	//while all not eaten and no one dead
+	//while all not eaten and no one deadi
+	if (philo->id % 2 == 1)
+		usleep(500);
 	pthread_mutex_lock(&data->death_lock);
 	while (data->dead_full == 0)
 	{
