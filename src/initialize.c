@@ -69,15 +69,9 @@ static int	philo_and_lock(t_rules *data)
 	}
 	if (pthread_mutex_init(&data->death_lock, NULL))
 		return (1);
-	if (pthread_mutex_init(&data->print_lock, NULL))
-	{
-		pthread_mutex_destroy(&data->death_lock);
-		return (1);
-	}
 	if (init_locks(data))
 	{
 		pthread_mutex_destroy(&data->death_lock);
-		pthread_mutex_destroy(&data->print_lock);
 		return (1);
 	}
 	return (0);

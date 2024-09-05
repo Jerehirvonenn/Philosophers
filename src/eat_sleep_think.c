@@ -29,19 +29,16 @@ static int	ft_sleep(long long wait, t_philo *philo)
 //get rid of print_lock??
 static int	print_lock(char *str, t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->print_lock);
 	pthread_mutex_lock(&philo->data->death_lock);
 	if (philo->data->dead || philo->data->full)
 	{
-		pthread_mutex_unlock(&philo->data->print_lock);
 		pthread_mutex_unlock(&philo->data->death_lock);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->data->death_lock);
 	printf("%lld ", ft_time() - philo->data->start_time);
 	printf("%d ", philo->id);
 	printf("%s\n", str);
-	pthread_mutex_unlock(&philo->data->print_lock);
+	pthread_mutex_unlock(&philo->data->death_lock);
 	return (0);
 }
 

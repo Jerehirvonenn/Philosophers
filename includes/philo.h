@@ -35,7 +35,6 @@ typedef struct s_rules
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		*meal_lock;
 	pthread_mutex_t		death_lock;
-	pthread_mutex_t		print_lock;
 }	t_rules;
 
 //initialize.c
