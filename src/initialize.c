@@ -16,7 +16,8 @@ int	check_args(int ac, char **av, t_rules *data)
 		return (1);
 	if (ac == 5)
 		data->num_eat = -1;
-	data->dead_full = 0;
+	data->dead = 0;
+	data->full = 0;
 	data->start_time = ft_time();
 	return (0);
 }

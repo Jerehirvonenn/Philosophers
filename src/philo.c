@@ -30,7 +30,7 @@ void	monitor(t_rules *data)
 	int	i;
 
 	i = -1;
-	while (1)
+	while (data->full == 0)
 	{
 		while (++i < data->philo_num)
 		{
@@ -38,7 +38,7 @@ void	monitor(t_rules *data)
 			if (ft_time() - data->philo[i].last_meal >= data->time_die)
 			{
 				pthread_mutex_lock(&data->death_lock);
-				data->dead_full = 1;
+				data->dead = 1;
 				printf("%lld %d %s\n", ft_time() - data->start_time, i + 1, "died");
 				pthread_mutex_unlock(&data->death_lock);
 				pthread_mutex_unlock(&data->meal_lock[i]);
@@ -51,7 +51,7 @@ void	monitor(t_rules *data)
 		while (data->num_eat != -1 && i < data->philo_num && data->philo[i].meals >= data->num_eat)
 			i++;
 		if (i == data->philo_num)
-			return ;
+			data->full = 1;
 		i = -1;
 	}
 }
