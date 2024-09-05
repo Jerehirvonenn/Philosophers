@@ -26,11 +26,12 @@ static int	ft_sleep(long long wait, t_philo *philo)
 	return (0);
 }
 
+//get rid of print_lock??
 static int	print_lock(char *str, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->print_lock);
 	pthread_mutex_lock(&philo->data->death_lock);
-	if (philo->data->dead)
+	if (philo->data->dead || philo->data->full)
 	{
 		pthread_mutex_unlock(&philo->data->print_lock);
 		pthread_mutex_unlock(&philo->data->death_lock);
@@ -74,18 +75,27 @@ static int	ft_sleep_think(t_philo *philo)
 	return (0);
 }
 
-
+int	lonely_philo_check(t_philo *philo)
+{
+	if (philo->data->philo_num == 1)
+	{
+		print_lock("has taken a fork", philo);
+		return (1);
+	}
+	return (0);
+}
  //FIX FOR ONE PHILOSOPHER
 void	*eat_sleep_think(void *strct)
 {
-t_philo	*philo;
+	t_philo	*philo;
 	t_rules	*data;	
 
 	philo = (t_philo *)strct;
 	data = philo->data;
-	//while all not eaten and no one deadi
-	if (philo->id % 2 == 0)
-		usleep(5000);
+	if (philo->id % 2 == 0 || philo->id == data->philo_num)
+		ft_sleep(data->time_sleep / 2, philo);
+	if (lonely_philo_check(philo))
+		return 0;
 	pthread_mutex_lock(&data->death_lock);
 	while (data->full == 0 && data->dead == 0)
 	{
