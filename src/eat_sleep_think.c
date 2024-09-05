@@ -55,12 +55,12 @@ static int	grab_forks(t_philo *philo)
 
 static int	ft_eat(t_philo *philo)
 {
+	print_lock("is eating", philo);
+	ft_sleep(philo->data->time_eat, philo);
 	pthread_mutex_lock(philo->meal_lock);
 	philo->meals++;
 	philo->last_meal = ft_time();
 	pthread_mutex_unlock(philo->meal_lock);
-	print_lock("is eating", philo);
-	ft_sleep(philo->data->time_eat, philo);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 	return (0);
@@ -92,6 +92,10 @@ t_philo	*philo;
 		pthread_mutex_unlock(&data->death_lock);
 		grab_forks(philo);
 		ft_eat(philo);
+		pthread_mutex_lock(&data->death_lock);
+		if (data->full)
+			break;
+		pthread_mutex_unlock(&data->death_lock);
 		ft_sleep_think(philo);
 		pthread_mutex_lock(&data->death_lock);
 	}

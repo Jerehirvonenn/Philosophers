@@ -48,10 +48,24 @@ void	monitor(t_rules *data)
 
 		}
 		i = 0;
-		while (data->num_eat != -1 && i < data->philo_num && data->philo[i].meals >= data->num_eat)
-			i++;
+		while (data->num_eat != -1 && i < data->philo_num)
+		{
+			pthread_mutex_lock(&data->meal_lock[i]);
+			if (data->philo[i].meals >= data->num_eat)
+				i++;
+			else
+			{
+				pthread_mutex_unlock(&data->meal_lock[i]);
+				break;
+			}
+			pthread_mutex_unlock(&data->meal_lock[i - 1]);
+		}
 		if (i == data->philo_num)
+		{
+			pthread_mutex_lock(&data->death_lock);
 			data->full = 1;
+			pthread_mutex_unlock(&data->death_lock);
+		}
 		i = -1;
 	}
 }
