@@ -1,4 +1,4 @@
-#include "../includes/philo.h"
+#include "philo.h"
 
 int	check_args(int ac, char **av, t_rules *data)
 {

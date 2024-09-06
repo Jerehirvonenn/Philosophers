@@ -1,5 +1,4 @@
-#include "../includes/philo.h"
-#include <stdio.h> //DELETE
+#include "philo.h"
 
 //TO DO: Usage message, Error messages for failingto create threads/mutexes, func that stops all threads if
 //lets say making thread nmber 5 fails

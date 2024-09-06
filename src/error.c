@@ -1,4 +1,4 @@
-#include "../includes/philo.h"
+#include "philo.h"
 
 int	error_message(char *str)
 {

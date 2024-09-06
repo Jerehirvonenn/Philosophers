@@ -1,4 +1,4 @@
-#include "../includes/philo.h"
+#include "philo.h"
 
 #include <stdio.h> //DEL
 static int	ft_sleep(long long wait, t_philo *philo)
@@ -26,7 +26,6 @@ static int	ft_sleep(long long wait, t_philo *philo)
 	return (0);
 }
 
-//get rid of print_lock??
 static int	print_lock(char *str, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->death_lock);
@@ -35,9 +34,8 @@ static int	print_lock(char *str, t_philo *philo)
 		pthread_mutex_unlock(&philo->data->death_lock);
 		return (1);
 	}
-	printf("%lld ", ft_time() - philo->data->start_time);
-	printf("%d ", philo->id);
-	printf("%s\n", str);
+	printf("%lld %d %s\n", ft_time() - philo->data->start_time,
+		philo->id, str);
 	pthread_mutex_unlock(&philo->data->death_lock);
 	return (0);
 }
@@ -54,10 +52,12 @@ static int	grab_forks(t_philo *philo)
 static int	ft_eat(t_philo *philo)
 {
 	print_lock("is eating", philo);
+	pthread_mutex_lock(philo->meal_lock);
+	philo->last_meal = ft_time();
+	pthread_mutex_unlock(philo->meal_lock);
 	ft_sleep(philo->data->time_eat, philo);
 	pthread_mutex_lock(philo->meal_lock);
 	philo->meals++;
-	philo->last_meal = ft_time();
 	pthread_mutex_unlock(philo->meal_lock);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
@@ -81,7 +81,7 @@ int	lonely_philo_check(t_philo *philo)
 	}
 	return (0);
 }
- //FIX FOR ONE PHILOSOPHER
+
 void	*eat_sleep_think(void *strct)
 {
 	t_philo	*philo;
