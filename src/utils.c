@@ -10,7 +10,7 @@ long long	ft_time(void)
 
 void	ft_putstr_fd(char *str, int fd)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])

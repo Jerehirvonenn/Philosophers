@@ -7,7 +7,7 @@
 # include <stdio.h>
 # include <sys/time.h>
 
-struct s_rules;
+struct	s_rules;
 
 typedef struct s_philo
 {
@@ -46,6 +46,7 @@ int	start_threads(t_rules *data);
 int	join_threads(t_rules *data);
 
 //error.c
+int	lonely_philo_check(t_philo *philo);
 int	error_message(char *str);
 int	free_and_destroy(char *str, t_rules *data, int exit);
 
@@ -60,5 +61,7 @@ int	join_threads(t_rules *data);
 
 //eat_sleep_think.c
 void	*eat_sleep_think(void *strct);
+int	print_lock(char *str, t_philo *philo);
+int	ft_sleep(long long wait, t_philo *philo);
 
 #endif

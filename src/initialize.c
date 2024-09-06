@@ -24,20 +24,17 @@ int	check_args(int ac, char **av, t_rules *data)
 
 static int	init_locks(t_rules *data)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = -1;
 	j = -1;
 	while (++i < data->philo_num)
-	{
 		if (pthread_mutex_init(&data->forks[i], NULL))
-		{
 			while (--i >= 0)
 				pthread_mutex_destroy(&data->forks[i]);
-			return (1);
-		}
-	}
+	if (i <= 0)
+		return (1);
 	while (++j < data->philo_num)
 	{
 		if (pthread_mutex_init(&data->meal_lock[i], NULL))
