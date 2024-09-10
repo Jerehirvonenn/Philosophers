@@ -2,7 +2,8 @@
 
 void	ft_test(t_philo *philo)
 {
-	return ;
+	printf("Hello process philo number %i\n",philo->id);
+	exit(0);
 }
 
 int	start_philos(t_rules *data)
@@ -19,7 +20,11 @@ int	start_philos(t_rules *data)
 		data->philo[i].last_meal = start;
 		data->philo[i].pid = fork();
 		if (data->philo[i].pid == -1)
+		{
+			while (--i >= 0)
+				kill(data->philo[i].pid, SIGTERM);
 			return (1);
+		}
 		else if (data->philo[i].pid == 0)
 			ft_test(&data->philo[i]);
 		else
