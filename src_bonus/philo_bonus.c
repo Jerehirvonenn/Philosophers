@@ -1,5 +1,12 @@
 #include "philo_bonus.h"
 
+void	eat_sleep_think(t_philo *philo)
+{
+	t_rules *data;
+
+	data = philo->data;
+}
+
 void	ft_test(t_philo *philo)
 {
 	printf("Hello process philo number %i\n",philo->id);
@@ -16,7 +23,6 @@ int	start_philos(t_rules *data)
 	data->start_time = start;
 	while (i < data->philo_num)
 	{
-		//if one of the forks fail, need to kill already succesfull processes also.
 		data->philo[i].last_meal = start;
 		data->philo[i].pid = fork();
 		if (data->philo[i].pid == -1)

@@ -39,6 +39,7 @@ typedef struct s_rules
 	sem_t			*forks;
 	sem_t			*meal_lock;
 	sem_t			*death_lock;
+	sem_t			*full_lock;
 }	t_rules;
 
 //error_bonus.c

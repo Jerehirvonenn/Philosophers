@@ -41,11 +41,14 @@ static int	init_sems(t_rules *data)
 {
 	sem_unlink("/philo_forks");
 	sem_unlink("/philo_death");
-	sem_unlink("/philo_mealcheck");
+	sem_unlink("/philo_meal");
+	sem_unlink("/philo_full");
 	data->forks = sem_open("/philo_forks", O_CREAT, S_IRWXU, data->philo_num);
-	data->death_lock = sem_open("/philo_write", O_CREAT, S_IRWXU, 1);
-	data->meal_lock = sem_open("/philo_mealcheck", O_CREAT, S_IRWXU, 1);
-	if (data->forks == SEM_FAILED || data->death_lock == SEM_FAILED || data->meal_lock == SEM_FAILED)
+	data->death_lock = sem_open("/philo_death", O_CREAT, S_IRWXU, 1);
+	data->meal_lock = sem_open("/philo_meal", O_CREAT, S_IRWXU, 1);
+	data->full_lock = sem_open("/philo_full", O_CREAT, S_IRWXU, 0);
+	if (data->forks == SEM_FAILED || data->death_lock == SEM_FAILED
+		|| data->meal_lock == SEM_FAILED || data->full_lock == SEM_FAILED)
 	{
 		//could maybe use free and deastroy func
 		if (data->forks != SEM_FAILED)
@@ -54,9 +57,12 @@ static int	init_sems(t_rules *data)
 			sem_close(data->death_lock);
 		if (data->meal_lock != SEM_FAILED)
 			sem_close(data->meal_lock);
+		if (data->full_lock != SEM_FAILED)
+			sem_close(data->full_lock);
 		sem_unlink("/philo_forks");
-		sem_unlink("/philo_write");
-		sem_unlink("/philo_mealcheck");
+		sem_unlink("/philo_death");
+		sem_unlink("/philo_meal");
+		sem_unlink("/philo_full");
 		return (1);
 	}
 	return (0);
