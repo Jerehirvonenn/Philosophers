@@ -55,4 +55,7 @@ long long	ft_time(void);
 void		ft_putstr_fd(char *str, int fd);
 int		ft_atoi(const char *str, int *res);
 
+//
+int	eat_sleep_think(void *strct);
+
 #endif

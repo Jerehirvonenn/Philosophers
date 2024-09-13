@@ -6,3 +6,4 @@ DS_store
 *.swp
 .*
 src/philo
+src_bonus/philo_bonus

@@ -1,49 +1,31 @@
 #include "philo_bonus.h"
 
-int	ft_sleep(long long wait, t_philo *philo)
+int	ft_sleep(long long wait)
 {
 	long long	start;
-	long long	i;
 
 	start = ft_time();
-	i = 0;
 	while (ft_time() - start < wait)
 	{
-		if (i % 100 == 0)
-		{
-			pthread_mutex_lock(&philo->data->death_lock);
-			if (philo->data->dead)
-			{
-				pthread_mutex_unlock(&philo->data->death_lock);
-				return (1);
-			}
-			pthread_mutex_unlock(&philo->data->death_lock);
-		}
-		i++;
-		usleep(500);
+		usleep(1000);
 	}
 	return (0);
 }
 
 int	print_lock(char *str, t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->death_lock);
-	if (philo->data->dead || philo->data->full)
-	{
-		pthread_mutex_unlock(&philo->data->death_lock);
-		return (1);
-	}
+	sem_wait(philo->data->death_lock);
 	printf("%lld %d %s\n", ft_time() - philo->data->start_time,
 		philo->id, str);
-	pthread_mutex_unlock(&philo->data->death_lock);
+	sem_post(philo->data->death_lock);
 	return (0);
 }
 
 static int	grab_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->left_fork);
+	sem_wait(philo->data->forks);
 	print_lock("has taken a fork", philo);
-	pthread_mutex_lock(philo->right_fork);
+	sem_wait(philo->data->forks);
 	print_lock("has taken a fork", philo);
 	return (0);
 }
@@ -51,19 +33,19 @@ static int	grab_forks(t_philo *philo)
 static int	ft_eat(t_philo *philo)
 {
 	print_lock("is eating", philo);
-	pthread_mutex_lock(philo->meal_lock);
+	sem_wait(philo->data->meal_lock);
 	philo->last_meal = ft_time();
-	pthread_mutex_unlock(philo->meal_lock);
-	ft_sleep(philo->data->time_eat, philo);
-	pthread_mutex_lock(philo->meal_lock);
+	sem_post(philo->data->meal_lock);
+	ft_sleep(philo->data->time_eat);
+	sem_wait(philo->data->meal_lock);
 	philo->meals++;
-	pthread_mutex_unlock(philo->meal_lock);
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
+	sem_post(philo->data->meal_lock);
+	sem_post(philo->data->forks);
+	sem_post(philo->data->forks);
 	return (0);
 }
 
-int	lonely_philo_check(t_philo *philo)
+/*int	lonely_philo_check(t_philo *philo)
 {
 	t_rules	*data;
 
@@ -76,32 +58,32 @@ int	lonely_philo_check(t_philo *philo)
 	if (philo->id % 2 == 0 || philo->id == data->philo_num)
 		ft_sleep(data->time_sleep / 2, philo);
 	return (0);
-}
+}*/
 
-void	*eat_sleep_think(void *strct)
+int	eat_sleep_think(void *strct)
 {
 	t_philo	*philo;
 	t_rules	*data;	
 
 	philo = (t_philo *)strct;
 	data = philo->data;
-	if (lonely_philo_check(philo))
-		return (0);
-	pthread_mutex_lock(&data->death_lock);
-	while (data->full == 0 && data->dead == 0)
+	//if (lonely_philo_check(philo))
+	//	return (0);
+	sem_wait(data->death_lock);
+	while (1)
 	{
-		pthread_mutex_unlock(&data->death_lock);
+		sem_post(data->death_lock);
 		grab_forks(philo);
 		ft_eat(philo);
-		pthread_mutex_lock(&data->death_lock);
-		if (data->full)
+		sem_wait(data->death_lock);
+		if (philo->meals >= data->num_eat && data->num_eat != 0) //need to change later
 			break ;
-		pthread_mutex_unlock(&data->death_lock);
+		sem_post(data->death_lock);
 		print_lock("is sleeping", philo);
-		ft_sleep(philo->data->time_sleep, philo);
+		ft_sleep(philo->data->time_sleep);
 		print_lock("is thinking", philo);
-		pthread_mutex_lock(&data->death_lock);
+		sem_wait(data->death_lock);
 	}
-	pthread_mutex_unlock(&data->death_lock);
-	return (0);
+	sem_post(data->death_lock);
+	exit (0);
 }
