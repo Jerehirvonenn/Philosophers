@@ -4,6 +4,8 @@ int	lonely_philo_check(t_philo *philo)
 {
 	t_rules	*data;
 
+
+	print_lock("is thinking", philo);
 	data = philo->data;
 	if (philo->data->philo_num == 1)
 	{

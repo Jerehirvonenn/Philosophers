@@ -37,7 +37,7 @@ static int	init_locks(t_rules *data)
 		return (1);
 	while (++j < data->philo_num)
 	{
-		if (pthread_mutex_init(&data->meal_lock[i], NULL))
+		if (pthread_mutex_init(&data->meal_lock[j], NULL))
 		{
 			while (--i >= 0)
 				pthread_mutex_destroy(&data->forks[i]);
