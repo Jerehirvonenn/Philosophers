@@ -62,4 +62,3 @@ Program name: philo
 Concurrency: Uses pthreads. Each philosopher is a separate thread.
 Synchronization: Uses pthread_mutex for each fork to prevent data races. A philosopher must lock the mutexes for both their left and right forks before eating.
 Forbidden: No global variables are used.
-
