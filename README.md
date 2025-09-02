@@ -7,13 +7,6 @@ The goal is to simulate a group of philosophers sitting at a round table who alt
 This implementation is written entirely in **C**:  
 - **Mandatory part** → uses `pthreads` and `mutexes`   
 
-## 📑 Table of Contents
-- [The Problem](#The-Problem)  
-- [How It Works](#how-it-works)   
-- [Installation & Compilation](#installation--compilation)  
-- [Usage](#usage)  
-- [Rules & Constraints](#rules--constraints)  
-
 ## 🧩 The Problem
 The dining philosophers problem is stated as follows:  
 
