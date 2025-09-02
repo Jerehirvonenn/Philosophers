@@ -40,7 +40,7 @@ The simulation ends when:
 - A philosopher dies, or  
 - All philosophers have eaten a specified number of times.  
 
-
+---
 ### Installation & Compilation
 Clone the repository
 ```
