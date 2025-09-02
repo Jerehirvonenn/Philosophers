@@ -8,7 +8,7 @@ This implementation is written entirely in **C**:
 - **Mandatory part** → uses `pthreads` and `mutexes`   
 
 ## 📑 Table of Contents
-- [The Problem](#🧩 The Problem)  
+- [The Problem](#🧩TheProblem)  
 - [How It Works](#how-it-works)   
 - [Installation & Compilation](#installation--compilation)  
 - [Usage](#usage)  
